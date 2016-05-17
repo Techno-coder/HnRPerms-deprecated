@@ -14,16 +14,7 @@ public class Main extends JavaPlugin {
     private static final ChatMessages chatMessages = new ChatMessages();
 
     @Override
-    public void onEnable() {
-        Bukkit.getPluginManager.registerEvents(this, this);
-    }
-
-    @Override
-    public void onDisable() {
-
-    }
-
-    @EventHandler
+    // why did you put eventhandler here ????
     public boolean onCommand(CommandSender e, Command command, String label, String[] args) {
         if (!command.getName().equalsIgnoreCase("hnrperms")) {
             return true;
