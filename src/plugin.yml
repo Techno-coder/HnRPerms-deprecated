@@ -1,11 +1,9 @@
 main: com.weebly.openboxtechnologies.hnrperms.Main
-name: BukkitTemplate
+name: HnRPerms
 version: 0.1
 author: TechnoBrony
-description: Bukkit Template
+description: HnRPerms Plugin
 commands:
-   templatecmd:
-      description: This is a demo command.
+   hnrperms:
+      description: Main command of the HnR Permissions System.
       usage: /<command>
-      permission: <plugin name>.templatecmd
-      permission-message: Sorry, you can't run this command.

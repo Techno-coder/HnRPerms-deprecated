@@ -2,7 +2,6 @@ package com.weebly.openboxtechnologies.hnrperms;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -11,6 +10,8 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 
 public class Main extends JavaPlugin {
+
+    private static final ChatMessages chatMessages = new ChatMessages();
 
     @Override
     public void onEnable() {
@@ -24,13 +25,36 @@ public class Main extends JavaPlugin {
 
     @EventHandler
     public boolean onCommand(CommandSender e, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase("templatecmd")) {
-            if (e instanceof Player) {
-                e.sendMessage("This command works!");
-            }
+        if (!command.getName().equalsIgnoreCase("hnrperms")) {
+            return false;
+        }
+
+        if (!e.hasPermission("rank.admin")) {
+            e.sendMessage(chatMessages.permError);
+        }
+
+        if (args.length == 0) {
+            e.sendMessage(chatMessages.helpChat);
+            return true;
+        } else if (args.length == 1) {
+            //TODO Missing argument PLAYER
+            return true;
+        } else if (args.length == 2) {
+            //TODO Missing argument RANK
             return true;
         }
-        return false;
+
+        if (args[0].equalsIgnoreCase("setrank")) {
+            //TODO Handle Set rank
+        } else if (args[0].equalsIgnoreCase("addrank")) {
+            //TODO Handle Add rank
+        } else if (args[0].equalsIgnoreCase("removerank")) {
+            //TODO Handle Remove rank
+        } else {
+            //TODO Handle unknown argument
+        }
+
+        return true;
     }
 
 }
