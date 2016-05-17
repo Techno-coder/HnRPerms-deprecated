@@ -26,7 +26,7 @@ public class Main extends JavaPlugin {
     @EventHandler
     public boolean onCommand(CommandSender e, Command command, String label, String[] args) {
         if (!command.getName().equalsIgnoreCase("hnrperms")) {
-            return false;
+            return true;
         }
 
         if (!e.hasPermission("rank.admin")) {
