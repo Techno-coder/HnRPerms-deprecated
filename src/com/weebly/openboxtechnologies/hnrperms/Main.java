@@ -13,20 +13,11 @@ public class Main extends JavaPlugin {
 
     private static final ChatMessages chatMessages = new ChatMessages();
 
+    // why did you put eventhandler here ????
     @Override
-    public void onEnable() {
-        new Listener(this);
-    }
-
-    @Override
-    public void onDisable() {
-
-    }
-
-    @EventHandler
     public boolean onCommand(CommandSender e, Command command, String label, String[] args) {
         if (!command.getName().equalsIgnoreCase("hnrperms")) {
-            return false;
+            return true;
         }
 
         if (!e.hasPermission("rank.admin")) {
