@@ -13,8 +13,8 @@ public class Main extends JavaPlugin {
 
     private static final ChatMessages chatMessages = new ChatMessages();
 
-    @Override
     // why did you put eventhandler here ????
+    @Override
     public boolean onCommand(CommandSender e, Command command, String label, String[] args) {
         if (!command.getName().equalsIgnoreCase("hnrperms")) {
             return true;
