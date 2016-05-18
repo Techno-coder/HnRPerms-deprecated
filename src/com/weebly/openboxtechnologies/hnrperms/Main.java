@@ -3,7 +3,11 @@ package com.weebly.openboxtechnologies.hnrperms;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
+import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Created by zhiyuanqi on 17/05/16.
@@ -13,6 +17,10 @@ public class Main extends JavaPlugin {
 
     private static final ChatMessages chatMessages = new ChatMessages();
 
+    public static HashMap<UUID,PermissionAttachment> playerHashmap = new HashMap<>();
+
+    //TODO Add SQL Permission Storage and Rank Storage
+
     @Override
     public void onEnable() {
         new Listener(this);
@@ -20,7 +28,7 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        playerHashmap.clear();
     }
 
     @EventHandler
