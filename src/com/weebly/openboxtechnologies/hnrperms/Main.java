@@ -31,7 +31,7 @@ public class Main extends JavaPlugin {
         playerHashmap.clear();
     }
 
-    @EventHandler
+    @Override
     public boolean onCommand(CommandSender e, Command command, String label, String[] args) {
         if (!command.getName().equalsIgnoreCase("hnrperms")) {
             return false;
