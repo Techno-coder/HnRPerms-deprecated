@@ -12,6 +12,7 @@ public class ChatMessages {
             "&e&lHnRPerms&7&l> &a/hnrperms setrank <player> <rank> &f- Sets the rank of someone\n" +
             "&e&lHnRPerms&7&l> &a/hnrperms addrank <player> <rank> &f- Adds a player to a rank\n" +
             "&e&lHnRPerms&7&l> &a/hnrperms removerank <player> <rank> &f- Removes a player from a rank\n");
+
     final String suffix = returnAlternateColorString("&9!");
 
     final String set1 = returnAlternateColorString("&e&lHnRPerms&7&l> &9You have set &c");

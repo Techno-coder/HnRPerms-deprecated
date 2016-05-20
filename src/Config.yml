@@ -1,0 +1,5 @@
+message:
+  - "This is the firstline of the message"
+  - "You must ALWAYS use double quotes"
+  - "This is especially true if you want to use color"
+  - "If you don't specify a message, a default one with be used instead"
