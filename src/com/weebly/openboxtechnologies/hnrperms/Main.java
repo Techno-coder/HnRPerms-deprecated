@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -35,9 +36,12 @@ public class Main extends JavaPlugin {
     private FileConfiguration ladder, sql, players, ranks, chat;
 
     private List<String> helpChat;
+    public static List<String> rankOrder;
 
     public static Statement statement;
     public static HashMap<UUID,PermissionAttachment> playerHashmap = new HashMap<>();
+    public static HashMap<UUID,ArrayList<String>> playerRankmap = new HashMap<>();
+    public static HashMap<String, ArrayList<String>> rankPerms = new HashMap<>();
 
     //TODO Add SQL Permission Storage and Rank Storage
 
@@ -62,6 +66,18 @@ public class Main extends JavaPlugin {
         if (helpChat == null) {
             helpChat.clear();
             helpChat.add(0, chatMessages.helpChat);
+        }
+        List<String> tempOrder = getLadderConfig().getStringList("grouporder");
+        for (String t : tempOrder) {
+            rankOrder.addAll(getLadderConfig().getStringList(t));
+            ArrayList<String> localRankList = new ArrayList<>();
+            localRankList.addAll(getLadderConfig().getStringList(t));
+            for (String s : localRankList) {
+                List<String> tempCurrentRankPerms = getRanksConfig().getStringList(s);
+                ArrayList<String> tempCastConversion = new ArrayList<>();
+                tempCastConversion.addAll(tempCurrentRankPerms);
+                rankPerms.put(s, tempCastConversion);
+            }
         }
     }
 

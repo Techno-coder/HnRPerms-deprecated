@@ -1,16 +1,24 @@
-Default
-Gold
-Emerald
-Diamond
-Platinum
-YouTube
-Twitch
-GFX
-Builder
-Dev
-Mentee
-Mod
-Vet.mod
-Admin
-Manager
-Owner
+grouporder:
+  - "donors"
+  - "extras"
+  - "staff"
+donors:
+  - "Default"
+  - "Gold"
+  - "Emerald"
+  - "Diamond"
+  - "Platinum"
+extras:
+  - "YouTube"
+  - "Twitch"
+  - "GFX"
+  - "Builder"
+  - "Dev"
+  - "Vet.Dev"
+staff:
+  - "Mentee"
+  - "Mod"
+  - "Vet.mod"
+  - "Admin"
+  - "Manager"
+  - "Owner"
