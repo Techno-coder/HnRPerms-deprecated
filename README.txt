@@ -4,6 +4,6 @@ This plugin is a permissions plugin for the HnR Network Minecraft server.
 
 © 2016 HnR Network All Rights Reserved
 
-SQL : UUID, STRING
+SQL : STRING, STRING
 Table Name : Perms
 UUID, Rank

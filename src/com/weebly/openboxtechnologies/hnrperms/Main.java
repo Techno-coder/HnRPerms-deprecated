@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -35,15 +36,13 @@ public class Main extends JavaPlugin {
     private File ladderf, sqlf, playersf, ranksf, chatf;
     private FileConfiguration ladder, sql, players, ranks, chat;
 
-    private List<String> helpChat;
-    public static List<String> rankOrder;
+    private List<String> helpChat = new ArrayList<>();
+    public static List<String> rankOrder = new ArrayList<>();
 
     public static Statement statement;
     public static HashMap<UUID,PermissionAttachment> playerHashmap = new HashMap<>();
     public static HashMap<UUID,ArrayList<String>> playerRankmap = new HashMap<>();
     public static HashMap<String, ArrayList<String>> rankPerms = new HashMap<>();
-
-    //TODO Add SQL Permission Storage and Rank Storage
 
     @Override
     public void onEnable() {
@@ -97,6 +96,7 @@ public class Main extends JavaPlugin {
         }
 
         if (args.length == 0) {
+            e.sendMessage("Stuff Happened");
             for (String i : helpChat) {
                 ChatColor.translateAlternateColorCodes('&', i);
                 e.sendMessage(i);
@@ -110,8 +110,28 @@ public class Main extends JavaPlugin {
             return true;
         }
 
+        if (getServer().getPlayer(args[1]) == null) {
+            //TODO Invalid argument Player
+        } else if(!rankOrder.contains(args[2])) {
+            //TODO Invalid argument Rank
+        }
+
         if (args[0].equalsIgnoreCase("setrank")) {
-            //TODO Handle Set rank
+            Player p = getServer().getPlayer(args[1]);
+            try {
+                statement.executeUpdate("UPDATE Perms SET Rank = " + args[2] + " WHERE UUID = " + p.getUniqueId() + ";");
+                p.removeAttachment(playerHashmap.get(p.getUniqueId()));
+                playerHashmap.remove(p.getUniqueId());
+                playerHashmap.put(p.getUniqueId(), p.addAttachment(this));
+
+                ArrayList<String> rankPermsList = rankPerms.get(args[2]);
+                for (String s : rankPermsList) {
+                    Main.playerHashmap.get(p.getUniqueId()).setPermission(s, true);
+                }
+                e.sendMessage(chatMessages.set1 + args[1] + chatMessages.set2 + args[2]);
+            } catch (SQLException f) {
+                f.printStackTrace();
+            }
         } else if (args[0].equalsIgnoreCase("addrank")) {
             //TODO Handle Add rank
         } else if (args[0].equalsIgnoreCase("removerank")) {

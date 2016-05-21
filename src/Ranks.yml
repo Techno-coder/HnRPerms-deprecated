@@ -3,3 +3,83 @@ Default:
   - essentials.fireworks
   - poo.poo
   - rank.admin
+Gold:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+Emerald:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+Diamond:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+Platinum:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+YouTube:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+Twitch:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+GFX:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+Builder:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+Dev:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+Vet.Dev:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+Mentee:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+Mod:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+Vet.mod:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+Admin:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+Manager:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
+Owner:
+  - test.test
+  - essentials.fireworks
+  - poo.poo
+  - rank.admin
