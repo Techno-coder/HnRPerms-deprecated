@@ -44,7 +44,7 @@ public class Listener implements org.bukkit.event.Listener {
         try {
             if(!exists) {
                 Main.statement.executeUpdate("INSERT INTO Perms (UUID,Rank) VALUES ('" +
-                        e.getPlayer().getUniqueId().toString() + "'," + Main.rankOrder.get(0) + ");");
+                        e.getPlayer().getUniqueId().toString() + "','" + Main.rankOrder.get(0) + "');");
             }
             result = Main.statement.executeQuery("SELECT Rank FROM Perms WHERE UUID = '" + e.getPlayer().getUniqueId().toString() + "';");
             result.next();

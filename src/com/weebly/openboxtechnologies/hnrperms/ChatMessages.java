@@ -28,6 +28,8 @@ public class ChatMessages {
     final String playerAdd = returnAlternateColorString("&e&lHnRPerms&7&l> &9You have been added to &b");
     final String playerRM = returnAlternateColorString("&e&lHnRPerms&7&l> &9You have been removed from &b");
 
+    final String errorSet = returnAlternateColorString("&e&lHnRPerms&7&l> &9This player's rank cannot be changed!");
+
     private final String returnAlternateColorString(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }

@@ -96,7 +96,6 @@ public class Main extends JavaPlugin {
         }
 
         if (args.length == 0) {
-            e.sendMessage("Stuff Happened");
             for (String i : helpChat) {
                 ChatColor.translateAlternateColorCodes('&', i);
                 e.sendMessage(i);
@@ -158,6 +157,18 @@ public class Main extends JavaPlugin {
     }
 
     private void createFiles() {
+        try {
+            if (!getDataFolder().exists()) {
+                getDataFolder().mkdirs();
+            }
+            File file = new File(getDataFolder(), "config.yml");
+            if (!file.exists()) {
+                saveDefaultConfig();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         ladderf = new File(getDataFolder(), "Ladder.yml");
         sqlf = new File(getDataFolder(), "MySQL.yml");
         playersf = new File(getDataFolder(), "Players.yml");
