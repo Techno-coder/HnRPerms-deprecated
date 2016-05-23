@@ -29,16 +29,18 @@ public class Main extends JavaPlugin {
     private String host, database, username, password;
     private int port;
 
-    private FileConfiguration ladder, sql, players, ranks, chat, fixed;
+    private static FileConfiguration ladder, sql, players, ranks, fixed;
+    private static File playersf;
 
     private List<String> helpChat = new ArrayList<>();
-    public static List<String> rankOrder = new ArrayList<>();
+    static List<String> rankOrder = new ArrayList<>();
 
-    public static Statement statement;
-    public static HashMap<UUID,PermissionAttachment> playerHashmap = new HashMap<>();
-    public static HashMap<UUID,ArrayList<String>> playerRankmap = new HashMap<>();
-    public static HashMap<String, ArrayList<String>> rankPerms = new HashMap<>();
-    private ArrayList<String> fixedRankPlayers = new ArrayList<>();
+    static Statement statement;
+    static HashMap<UUID,PermissionAttachment> playerHashmap = new HashMap<>();
+    static HashMap<UUID,ArrayList<String>> playerRankmap = new HashMap<>();
+    static HashMap<String, ArrayList<String>> rankPerms = new HashMap<>();
+    private static HashMap<UUID, String> highestPlayerRank = new HashMap<>();
+    private static ArrayList<String> fixedRankPlayers = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -76,6 +78,11 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        try {
+            players.save(playersf);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         playerHashmap.clear();
     }
 
@@ -121,6 +128,7 @@ public class Main extends JavaPlugin {
             playerRankmap.get(p.getUniqueId()).clear();
             playerRankmap.get(p.getUniqueId()).add(args[2]);
             updatePlayerRank(args[2], p);
+            Main.getPlayersConfig().set(p.getUniqueId().toString(), args[2]);
             e.sendMessage(chatMessages.set1 + args[1] + chatMessages.set2 + args[2] + chatMessages.suffix);
             p.sendMessage(chatMessages.playerSet + args[2] + chatMessages.suffix);
         } else if (args[0].equalsIgnoreCase("addrank")) {
@@ -131,6 +139,7 @@ public class Main extends JavaPlugin {
                 ranksAsString += (i + " ");
             }
             updatePlayerRank(ranksAsString, p);
+            Main.getPlayersConfig().set(p.getUniqueId().toString(), ranksAsString);
             e.sendMessage(chatMessages.rankAdd1 + args[1] + chatMessages.rankAdd2 + args[2] + chatMessages.suffix);
             p.sendMessage(chatMessages.playerAdd + args[2] + chatMessages.suffix);
 
@@ -145,6 +154,7 @@ public class Main extends JavaPlugin {
                 ranksAsString = rankOrder.get(0);
             }
             updatePlayerRank(ranksAsString, p);
+            Main.getPlayersConfig().set(p.getUniqueId().toString(), ranksAsString);
             e.sendMessage(chatMessages.rankRM1 + args[1] + chatMessages.rankRM2 + args[2] + chatMessages.suffix);
             p.sendMessage(chatMessages.playerRM + args[2] + chatMessages.suffix);
         } else {
@@ -152,6 +162,10 @@ public class Main extends JavaPlugin {
         }
 
         return true;
+    }
+
+    public String getHighestRank(Player p) {
+        return highestPlayerRank.get(p.getUniqueId());
     }
 
     private void openConnection() throws SQLException, ClassNotFoundException {
@@ -167,7 +181,6 @@ public class Main extends JavaPlugin {
             connection = DriverManager.getConnection("jdbc:mysql://" + this.host+ ":" + this.port + "/" + this.database, this.username, this.password);
         }
     }
-
     private void createFiles() {
         try {
             if (!getDataFolder().exists()) {
@@ -181,13 +194,12 @@ public class Main extends JavaPlugin {
             e.printStackTrace();
         }
 
-        File ladderf, sqlf, playersf, ranksf, chatf, fixedf;
+        File ladderf, sqlf, ranksf, fixedf;
 
         ladderf = new File(getDataFolder(), "Ladder.yml");
         sqlf = new File(getDataFolder(), "MySQL.yml");
         playersf = new File(getDataFolder(), "Players.yml");
         ranksf = new File(getDataFolder(), "Ranks.yml");
-        chatf = new File(getDataFolder(), "Chat.yml");
         fixedf = new File(getDataFolder(), "FixedRank.yml");
 
         if (!ladderf.exists()) {
@@ -210,11 +222,6 @@ public class Main extends JavaPlugin {
             saveResource("Ranks.yml", false);
         }
 
-        if (!chatf.exists()) {
-            chatf.getParentFile().mkdirs();
-            saveResource("Chat.yml", false);
-        }
-
         if (!fixedf.exists()) {
             fixedf.getParentFile().mkdirs();
             saveResource("FixedRank.yml", false);
@@ -224,7 +231,6 @@ public class Main extends JavaPlugin {
         sql = new YamlConfiguration();
         players = new YamlConfiguration();
         ranks = new YamlConfiguration();
-        chat = new YamlConfiguration();
         fixed = new YamlConfiguration();
 
         try {
@@ -232,13 +238,11 @@ public class Main extends JavaPlugin {
             sql.load(sqlf);
             players.load(playersf);
             ranks.load(ranksf);
-            chat.load(chatf);
             fixed.load(fixedf);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
     }
-
     private void updatePlayerRank(String ranks, Player p) {
         try {
             statement.executeUpdate("UPDATE Perms SET Rank = '" + ranks + "' WHERE UUID = '" + p.getUniqueId() + "';");
@@ -249,28 +253,30 @@ public class Main extends JavaPlugin {
         playerHashmap.remove(p.getUniqueId());
         playerHashmap.put(p.getUniqueId(), p.addAttachment(this));
 
+        int rank = 0;
         for (String t : playerRankmap.get(p.getUniqueId())) {
             ArrayList<String> rankPermsList = rankPerms.get(t);
             for (String s : rankPermsList) {
                 Main.playerHashmap.get(p.getUniqueId()).setPermission(s, true);
             }
+            if (rankOrder.indexOf(t) > rank) {
+                rank = rankOrder.indexOf(t);
+            }
         }
+        highestPlayerRank.put(p.getUniqueId(), rankOrder.get(rank));
     }
 
-    public FileConfiguration getLadderConfig() {
+    private FileConfiguration getLadderConfig() {
         return this.ladder;
     }
-    public FileConfiguration getSQLConfig() {
+    private FileConfiguration getSQLConfig() {
         return this.sql;
     }
-    public FileConfiguration getPlayersConfig() {
-        return this.players;
+    static FileConfiguration getPlayersConfig() {
+        return players;
     }
-    public FileConfiguration getRanksConfig() {
+    private FileConfiguration getRanksConfig() {
         return this.ranks;
     }
-    public FileConfiguration getChatConfig() {
-        return this.chat;
-    }
-    public FileConfiguration getFixedConfig() { return this.fixed; }
+    private FileConfiguration getFixedConfig() { return this.fixed; }
 }

@@ -1,7 +1,6 @@
 package com.weebly.openboxtechnologies.hnrperms;
 
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -51,12 +50,15 @@ public class Listener implements org.bukkit.event.Listener {
             result.next();
             String[] playerRanksList = result.getString("Rank").split(" ");
             Main.playerRankmap.put(e.getPlayer().getUniqueId(), new ArrayList<>(Arrays.asList(playerRanksList)));
+            String ranksAsString = "";
             for (String t : playerRanksList) {
                 ArrayList<String> rankPermsList = Main.rankPerms.get(t);
                 for (String s : rankPermsList) {
                     Main.playerHashmap.get(e.getPlayer().getUniqueId()).setPermission(s, true);
                 }
+                ranksAsString += (t + " ");
             }
+            Main.getPlayersConfig().set(e.getPlayer().getUniqueId().toString(), ranksAsString);
 
         } catch (SQLException f) {
             f.printStackTrace();
@@ -73,10 +75,5 @@ public class Listener implements org.bukkit.event.Listener {
     public void onPlayerKick(PlayerKickEvent e) {
         Main.playerHashmap.remove(e.getPlayer().getUniqueId());
         Main.playerRankmap.remove(e.getPlayer().getUniqueId());
-    }
-
-    @EventHandler
-    public void onPlayerChat(AsyncPlayerChatEvent e) {
-        String msg = e.getMessage();
     }
 }

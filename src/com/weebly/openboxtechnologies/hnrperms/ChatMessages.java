@@ -8,10 +8,6 @@ import org.bukkit.ChatColor;
 
 public class ChatMessages {
     final String permError = returnAlternateColorString("&e&lHnRPerms&7&l> &9To use this feature, you must be rank &8(&cADMIN&8)&9!");
-    final String helpChat = returnAlternateColorString("&e&lHnRPerms&7&l> &a/hnrperms &f- Displays the help menu\n" +
-            "&e&lHnRPerms&7&l> &a/hnrperms setrank <player> <rank> &f- Sets the rank of someone\n" +
-            "&e&lHnRPerms&7&l> &a/hnrperms addrank <player> <rank> &f- Adds a player to a rank\n" +
-            "&e&lHnRPerms&7&l> &a/hnrperms removerank <player> <rank> &f- Removes a player from a rank\n");
 
     final String suffix = returnAlternateColorString("&9!");
 

@@ -2,4 +2,7 @@ message:
   - "This is the firstline of the message"
   - "You must ALWAYS use double quotes"
   - "This is especially true if you want to use color"
-  - "If you don't specify a message, a default one with be used instead"
+  - "&e&lHnRPerms&7&l> &a/hnrperms &f- Displays the help menu\n"
+  - "&e&lHnRPerms&7&l> &a/hnrperms setrank <player> <rank> &f- Sets the rank of someone\n"
+  - "&e&lHnRPerms&7&l> &a/hnrperms addrank <player> <rank> &f- Adds a player to a rank\n"
+  - "&e&lHnRPerms&7&l> &a/hnrperms removerank <player> <rank> &f- Removes a player from a rank\n"
