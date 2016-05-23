@@ -16,7 +16,7 @@ public class ChatMessages {
     final String suffix = returnAlternateColorString("&9!");
 
     final String set1 = returnAlternateColorString("&e&lHnRPerms&7&l> &9You have set &c");
-    final String set2 = returnAlternateColorString("&9’s rank to &b");
+    final String set2 = returnAlternateColorString("&9's rank to &b");
 
     final String rankAdd1 = returnAlternateColorString("&e&lHnRPerms&7&l> &9You have added &c");
     final String rankAdd2 = returnAlternateColorString(" to &b");

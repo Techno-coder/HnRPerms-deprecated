@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by zhiyuanqi on 17/05/16.
@@ -49,6 +50,7 @@ public class Listener implements org.bukkit.event.Listener {
             result = Main.statement.executeQuery("SELECT Rank FROM Perms WHERE UUID = '" + e.getPlayer().getUniqueId().toString() + "';");
             result.next();
             String[] playerRanksList = result.getString("Rank").split(" ");
+            Main.playerRankmap.put(e.getPlayer().getUniqueId(), new ArrayList<>(Arrays.asList(playerRanksList)));
             for (String t : playerRanksList) {
                 ArrayList<String> rankPermsList = Main.rankPerms.get(t);
                 for (String s : rankPermsList) {
@@ -64,11 +66,13 @@ public class Listener implements org.bukkit.event.Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         Main.playerHashmap.remove(e.getPlayer().getUniqueId());
+        Main.playerRankmap.remove(e.getPlayer().getUniqueId());
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent e) {
         Main.playerHashmap.remove(e.getPlayer().getUniqueId());
+        Main.playerRankmap.remove(e.getPlayer().getUniqueId());
     }
 
     @EventHandler

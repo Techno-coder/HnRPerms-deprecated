@@ -21,10 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Created by zhiyuanqi on 17/05/16.
- */
-
 public class Main extends JavaPlugin {
 
     private static final ChatMessages chatMessages = new ChatMessages();
@@ -33,8 +29,7 @@ public class Main extends JavaPlugin {
     private String host, database, username, password;
     private int port;
 
-    private File ladderf, sqlf, playersf, ranksf, chatf;
-    private FileConfiguration ladder, sql, players, ranks, chat;
+    private FileConfiguration ladder, sql, players, ranks, chat, fixed;
 
     private List<String> helpChat = new ArrayList<>();
     public static List<String> rankOrder = new ArrayList<>();
@@ -43,6 +38,7 @@ public class Main extends JavaPlugin {
     public static HashMap<UUID,PermissionAttachment> playerHashmap = new HashMap<>();
     public static HashMap<UUID,ArrayList<String>> playerRankmap = new HashMap<>();
     public static HashMap<String, ArrayList<String>> rankPerms = new HashMap<>();
+    private ArrayList<String> fixedRankPlayers = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -56,28 +52,26 @@ public class Main extends JavaPlugin {
         try {
             openConnection();
             statement = connection.createStatement();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
         helpChat = getConfig().getStringList("message");
-        if (helpChat == null) {
-            helpChat.clear();
-            helpChat.add(0, chatMessages.helpChat);
-        }
         List<String> tempOrder = getLadderConfig().getStringList("grouporder");
         for (String t : tempOrder) {
             rankOrder.addAll(getLadderConfig().getStringList(t));
             ArrayList<String> localRankList = new ArrayList<>();
             localRankList.addAll(getLadderConfig().getStringList(t));
-            for (String s : localRankList) {
-                List<String> tempCurrentRankPerms = getRanksConfig().getStringList(s);
+            for (int i = 0; i < localRankList.size(); i++) {
                 ArrayList<String> tempCastConversion = new ArrayList<>();
-                tempCastConversion.addAll(tempCurrentRankPerms);
-                rankPerms.put(s, tempCastConversion);
+                for (int j = i; j >= 0; j--) {
+                    List<String> tempCurrentRankPerms = getRanksConfig().getStringList(localRankList.get(j));
+                    tempCastConversion.addAll(tempCurrentRankPerms);
+                }
+                rankPerms.put(localRankList.get(i), tempCastConversion);
             }
         }
+        List<String> tempFixedConfig = getFixedConfig().getStringList("players");
+        fixedRankPlayers.addAll(tempFixedConfig);
     }
 
     @Override
@@ -93,12 +87,12 @@ public class Main extends JavaPlugin {
 
         if (!e.hasPermission("rank.admin")) {
             e.sendMessage(chatMessages.permError);
+            return true;
         }
 
         if (args.length == 0) {
             for (String i : helpChat) {
-                ChatColor.translateAlternateColorCodes('&', i);
-                e.sendMessage(i);
+                e.sendMessage(ChatColor.translateAlternateColorCodes('&', i));
             }
             return true;
         } else if (args.length == 1) {
@@ -111,30 +105,48 @@ public class Main extends JavaPlugin {
 
         if (getServer().getPlayer(args[1]) == null) {
             //TODO Invalid argument Player
+            return true;
         } else if(!rankOrder.contains(args[2])) {
             //TODO Invalid argument Rank
+            return true;
+        }
+
+        if (fixedRankPlayers.contains(args[1])) {
+            e.sendMessage(chatMessages.errorSet);
+            return true;
         }
 
         if (args[0].equalsIgnoreCase("setrank")) {
             Player p = getServer().getPlayer(args[1]);
-            try {
-                statement.executeUpdate("UPDATE Perms SET Rank = " + args[2] + " WHERE UUID = " + p.getUniqueId() + ";");
-                p.removeAttachment(playerHashmap.get(p.getUniqueId()));
-                playerHashmap.remove(p.getUniqueId());
-                playerHashmap.put(p.getUniqueId(), p.addAttachment(this));
-
-                ArrayList<String> rankPermsList = rankPerms.get(args[2]);
-                for (String s : rankPermsList) {
-                    Main.playerHashmap.get(p.getUniqueId()).setPermission(s, true);
-                }
-                e.sendMessage(chatMessages.set1 + args[1] + chatMessages.set2 + args[2]);
-            } catch (SQLException f) {
-                f.printStackTrace();
-            }
+            playerRankmap.get(p.getUniqueId()).clear();
+            playerRankmap.get(p.getUniqueId()).add(args[2]);
+            updatePlayerRank(args[2], p);
+            e.sendMessage(chatMessages.set1 + args[1] + chatMessages.set2 + args[2] + chatMessages.suffix);
+            p.sendMessage(chatMessages.playerSet + args[2] + chatMessages.suffix);
         } else if (args[0].equalsIgnoreCase("addrank")) {
-            //TODO Handle Add rank
+            Player p = getServer().getPlayer(args[1]);
+            String ranksAsString = "";
+            playerRankmap.get(p.getUniqueId()).add(args[2]);
+            for (String i : playerRankmap.get(p.getUniqueId())) {
+                ranksAsString += (i + " ");
+            }
+            updatePlayerRank(ranksAsString, p);
+            e.sendMessage(chatMessages.rankAdd1 + args[1] + chatMessages.rankAdd2 + args[2] + chatMessages.suffix);
+            p.sendMessage(chatMessages.playerAdd + args[2] + chatMessages.suffix);
+
         } else if (args[0].equalsIgnoreCase("removerank")) {
-            //TODO Handle Remove rank
+            Player p = getServer().getPlayer(args[1]);
+            String ranksAsString = "";
+            playerRankmap.get(p.getUniqueId()).remove(args[2]);
+            for (String i : playerRankmap.get(p.getUniqueId())) {
+                ranksAsString += (i + " ");
+            }
+            if (ranksAsString.equalsIgnoreCase("")) {
+                ranksAsString = rankOrder.get(0);
+            }
+            updatePlayerRank(ranksAsString, p);
+            e.sendMessage(chatMessages.rankRM1 + args[1] + chatMessages.rankRM2 + args[2] + chatMessages.suffix);
+            p.sendMessage(chatMessages.playerRM + args[2] + chatMessages.suffix);
         } else {
             //TODO Handle unknown argument
         }
@@ -169,11 +181,14 @@ public class Main extends JavaPlugin {
             e.printStackTrace();
         }
 
+        File ladderf, sqlf, playersf, ranksf, chatf, fixedf;
+
         ladderf = new File(getDataFolder(), "Ladder.yml");
         sqlf = new File(getDataFolder(), "MySQL.yml");
         playersf = new File(getDataFolder(), "Players.yml");
         ranksf = new File(getDataFolder(), "Ranks.yml");
         chatf = new File(getDataFolder(), "Chat.yml");
+        fixedf = new File(getDataFolder(), "FixedRank.yml");
 
         if (!ladderf.exists()) {
             ladderf.getParentFile().mkdirs();
@@ -200,11 +215,17 @@ public class Main extends JavaPlugin {
             saveResource("Chat.yml", false);
         }
 
+        if (!fixedf.exists()) {
+            fixedf.getParentFile().mkdirs();
+            saveResource("FixedRank.yml", false);
+        }
+
         ladder = new YamlConfiguration();
         sql = new YamlConfiguration();
         players = new YamlConfiguration();
         ranks = new YamlConfiguration();
         chat = new YamlConfiguration();
+        fixed = new YamlConfiguration();
 
         try {
             ladder.load(ladderf);
@@ -212,8 +233,27 @@ public class Main extends JavaPlugin {
             players.load(playersf);
             ranks.load(ranksf);
             chat.load(chatf);
+            fixed.load(fixedf);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void updatePlayerRank(String ranks, Player p) {
+        try {
+            statement.executeUpdate("UPDATE Perms SET Rank = '" + ranks + "' WHERE UUID = '" + p.getUniqueId() + "';");
+        } catch (SQLException f) {
+            f.printStackTrace();
+        }
+        p.removeAttachment(playerHashmap.get(p.getUniqueId()));
+        playerHashmap.remove(p.getUniqueId());
+        playerHashmap.put(p.getUniqueId(), p.addAttachment(this));
+
+        for (String t : playerRankmap.get(p.getUniqueId())) {
+            ArrayList<String> rankPermsList = rankPerms.get(t);
+            for (String s : rankPermsList) {
+                Main.playerHashmap.get(p.getUniqueId()).setPermission(s, true);
+            }
         }
     }
 
@@ -232,5 +272,5 @@ public class Main extends JavaPlugin {
     public FileConfiguration getChatConfig() {
         return this.chat;
     }
-
+    public FileConfiguration getFixedConfig() { return this.fixed; }
 }
