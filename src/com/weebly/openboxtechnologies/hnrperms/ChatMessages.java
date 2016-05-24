@@ -25,6 +25,21 @@ public class ChatMessages {
     final String playerRM = returnAlternateColorString("&e&lHnRPerms&7&l> &9You have been removed from &b");
 
     final String errorSet = returnAlternateColorString("&e&lHnRPerms&7&l> &9This player's rank cannot be changed!");
+    final String playerDefine = returnAlternateColorString("&e&lCommand&7&l> &9You have incorrectly used this command!\n" +
+            "&e&lCommand&7&l> &9You must define a player!\n" +
+            "&e&lCommand&7&l> &a/setrank <player> <rank>");
+    final String rankDefine = returnAlternateColorString("&e&lCommand&7&l> &9You have incorrectly used this command!\n" +
+            "&e&lCommand&7&l> &9You must define a rank!\n" +
+            "&e&lCommand&7&l> &a/setrank <player> <rank>");
+    final String invalidPlayer = returnAlternateColorString("&e&lCommand&7&l> &9You have incorrectly used this command!\n" +
+            "&e&lCommand&7&l> &9The player you have defined could not be found!\n" +
+            "&e&lCommand&7&l> &a/setrank <player> <rank>");
+    final String invalidRank = returnAlternateColorString("&e&lCommand&7&l> &9You have incorrectly used this command!\n" +
+            "&e&lCommand&7&l> &9The rank you have defined could not be found!\n" +
+            "&e&lCommand&7&l> &a/setrank <player> <rank>");
+    final String unknownArgument = returnAlternateColorString("&e&lCommand&7&l> &9You have incorrectly used this command!\n" +
+            "&e&lCommand&7&l> &9The argument you have defined could not be identified!\n" +
+            "&e&lCommand&7&l> &a/setrank <player> <rank>");
 
     private final String returnAlternateColorString(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);

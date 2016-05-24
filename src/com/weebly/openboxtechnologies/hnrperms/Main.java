@@ -103,18 +103,18 @@ public class Main extends JavaPlugin {
             }
             return true;
         } else if (args.length == 1) {
-            //TODO Missing argument PLAYER
+            e.sendMessage(chatMessages.playerDefine);
             return true;
         } else if (args.length == 2) {
-            //TODO Missing argument RANK
+            e.sendMessage(chatMessages.rankDefine);
             return true;
         }
 
         if (getServer().getPlayer(args[1]) == null) {
-            //TODO Invalid argument Player
+            e.sendMessage(chatMessages.invalidPlayer);
             return true;
         } else if(!rankOrder.contains(args[2])) {
-            //TODO Invalid argument Rank
+            e.sendMessage(chatMessages.invalidRank);
             return true;
         }
 
@@ -158,7 +158,7 @@ public class Main extends JavaPlugin {
             e.sendMessage(chatMessages.rankRM1 + args[1] + chatMessages.rankRM2 + args[2] + chatMessages.suffix);
             p.sendMessage(chatMessages.playerRM + args[2] + chatMessages.suffix);
         } else {
-            //TODO Handle unknown argument
+            e.sendMessage(chatMessages.unknownArgument);
         }
 
         return true;
