@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -244,11 +245,17 @@ public class Main extends JavaPlugin {
         }
     }
     private void updatePlayerRank(String ranks, Player p) {
-        try {
-            statement.executeUpdate("UPDATE Perms SET Rank = '" + ranks + "' WHERE UUID = '" + p.getUniqueId() + "';");
-        } catch (SQLException f) {
-            f.printStackTrace();
-        }
+        BukkitRunnable r = new BukkitRunnable() {
+            @Override
+            public void run() {
+                try {
+                    statement.executeUpdate("UPDATE Perms SET Rank = '" + ranks + "' WHERE UUID = '" + p.getUniqueId() + "';");
+                } catch (SQLException f) {
+                    f.printStackTrace();
+                }
+            }
+        };
+        r.runTaskAsynchronously(this);
         p.removeAttachment(playerHashmap.get(p.getUniqueId()));
         playerHashmap.remove(p.getUniqueId());
         playerHashmap.put(p.getUniqueId(), p.addAttachment(this));

@@ -5,6 +5,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,41 +29,47 @@ public class Listener implements org.bukkit.event.Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        Main.playerHashmap.put(e.getPlayer().getUniqueId(), e.getPlayer().addAttachment(plugin));
-        ResultSet result;
-        boolean exists;
-        try {
-            result = Main.statement.executeQuery("SELECT COUNT(UUID)" + " FROM Perms" +
-                    " WHERE UUID ='"+ e.getPlayer().getUniqueId().toString() +"';");
-            result.next();
-            exists = result.getInt(1) > 0;
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-            return;
-        }
-
-        try {
-            if(!exists) {
-                Main.statement.executeUpdate("INSERT INTO Perms (UUID,Rank) VALUES ('" +
-                        e.getPlayer().getUniqueId().toString() + "','" + Main.rankOrder.get(0) + "');");
-            }
-            result = Main.statement.executeQuery("SELECT Rank FROM Perms WHERE UUID = '" + e.getPlayer().getUniqueId().toString() + "';");
-            result.next();
-            String[] playerRanksList = result.getString("Rank").split(" ");
-            Main.playerRankmap.put(e.getPlayer().getUniqueId(), new ArrayList<>(Arrays.asList(playerRanksList)));
-            String ranksAsString = "";
-            for (String t : playerRanksList) {
-                ArrayList<String> rankPermsList = Main.rankPerms.get(t);
-                for (String s : rankPermsList) {
-                    Main.playerHashmap.get(e.getPlayer().getUniqueId()).setPermission(s, true);
+        BukkitRunnable r = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Main.playerHashmap.put(e.getPlayer().getUniqueId(), e.getPlayer().addAttachment(plugin));
+                ResultSet result;
+                boolean exists;
+                try {
+                    result = Main.statement.executeQuery("SELECT COUNT(UUID)" + " FROM Perms" +
+                            " WHERE UUID ='"+ e.getPlayer().getUniqueId().toString() +"';");
+                    result.next();
+                    exists = result.getInt(1) > 0;
+                } catch (SQLException exception) {
+                    exception.printStackTrace();
+                    return;
                 }
-                ranksAsString += (t + " ");
-            }
-            Main.getPlayersConfig().set(e.getPlayer().getUniqueId().toString(), ranksAsString);
 
-        } catch (SQLException f) {
-            f.printStackTrace();
-        }
+                try {
+                    if(!exists) {
+                        Main.statement.executeUpdate("INSERT INTO Perms (UUID,Rank) VALUES ('" +
+                                e.getPlayer().getUniqueId().toString() + "','" + Main.rankOrder.get(0) + "');");
+                    }
+                    result = Main.statement.executeQuery("SELECT Rank FROM Perms WHERE UUID = '" + e.getPlayer().getUniqueId().toString() + "';");
+                    result.next();
+                    String[] playerRanksList = result.getString("Rank").split(" ");
+                    Main.playerRankmap.put(e.getPlayer().getUniqueId(), new ArrayList<>(Arrays.asList(playerRanksList)));
+                    String ranksAsString = "";
+                    for (String t : playerRanksList) {
+                        ArrayList<String> rankPermsList = Main.rankPerms.get(t);
+                        for (String s : rankPermsList) {
+                            Main.playerHashmap.get(e.getPlayer().getUniqueId()).setPermission(s, true);
+                        }
+                        ranksAsString += (t + " ");
+                    }
+                    Main.getPlayersConfig().set(e.getPlayer().getUniqueId().toString(), ranksAsString);
+
+                } catch (SQLException f) {
+                    f.printStackTrace();
+                }
+            }
+        };
+        r.runTaskAsynchronously(plugin);
     }
 
     @EventHandler
