@@ -55,7 +55,7 @@ public class Main extends JavaPlugin {
         try {
             openConnection();
             statement = connection.createStatement();           
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS Perms(UUID varchar(36), Rank varchar(10));");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS Perms(UUID varchar(36), Rank varchar(255));");
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
