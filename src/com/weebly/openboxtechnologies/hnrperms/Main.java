@@ -1,7 +1,6 @@
 package com.weebly.openboxtechnologies.hnrperms;
 
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -273,17 +272,6 @@ public class Main extends JavaPlugin {
             }
         }
         highestPlayerRank.put(p.getUniqueId(), rankOrder.get(rank));
-    }
-    private void updateOfflinePlayer(UUID id, String ranks, int mode) {
-        switch (mode) {
-            case 0:
-                
-                break;
-            case 1:
-                break;
-            default:
-                break;
-        }
     }
 
     private FileConfiguration getLadderConfig() {
