@@ -273,6 +273,9 @@ public class Main extends JavaPlugin {
         }
         highestPlayerRank.put(p.getUniqueId(), rankOrder.get(rank));
     }
+    private void updateOfflinePlayer(UUID id, String ranks, int mode) {
+
+    }
 
     private FileConfiguration getLadderConfig() {
         return this.ladder;
