@@ -41,6 +41,10 @@ public class ChatMessages {
             "&e&lCommand&7&l> &9The argument you have defined could not be identified!\n" +
             "&e&lCommand&7&l> &a/setrank <player> <rank>");
 
+    final String offlineWarning = returnAlternateColorString("&e&lCommand&7&l> &9AddRank/SetRank/RemoveRank is ignored!");
+    final String offlineSuccessful1 = returnAlternateColorString("&e&lCommand&7&l> &9UUID: ");
+    final String offlineSuccessful2 = returnAlternateColorString(" &9has been updated with ranks: &c");
+
     private final String returnAlternateColorString(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }

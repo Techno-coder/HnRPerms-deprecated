@@ -110,6 +110,12 @@ public class Main extends JavaPlugin {
         }
 
         if (getServer().getPlayer(args[1]) == null) {
+            if (e.hasPermission("rank.console")) {
+                e.sendMessage(chatMessages.offlineWarning);
+                updateOfflinePlayer(UUID.fromString(args[1]), args[2]);
+                e.sendMessage(chatMessages.offlineSuccessful1 + args[1] + chatMessages.offlineSuccessful2 + args[2] + chatMessages.suffix);
+                return true;
+            }
             e.sendMessage(chatMessages.invalidPlayer);
             return true;
         } else if(!rankOrder.contains(args[2])) {
@@ -181,9 +187,10 @@ public class Main extends JavaPlugin {
         }
     }
     private void createFiles() {
+        boolean mkdirs = true;
         try {
             if (!getDataFolder().exists()) {
-                getDataFolder().mkdirs();
+                mkdirs = getDataFolder().mkdirs();
             }
             File file = new File(getDataFolder(), "config.yml");
             if (!file.exists()) {
@@ -202,28 +209,32 @@ public class Main extends JavaPlugin {
         fixedf = new File(getDataFolder(), "FixedRank.yml");
 
         if (!ladderf.exists()) {
-            ladderf.getParentFile().mkdirs();
+            mkdirs = ladderf.getParentFile().mkdirs();
             saveResource("Ladder.yml", false);
         }
 
         if (!sqlf.exists()) {
-            sqlf.getParentFile().mkdirs();
+            mkdirs = sqlf.getParentFile().mkdirs();
             saveResource("MySQL.yml", false);
         }
 
         if (!playersf.exists()) {
-            playersf.getParentFile().mkdirs();
+            mkdirs = playersf.getParentFile().mkdirs();
             saveResource("Players.yml", false);
         }
 
         if (!ranksf.exists()) {
-            ranksf.getParentFile().mkdirs();
+            mkdirs = ranksf.getParentFile().mkdirs();
             saveResource("Ranks.yml", false);
         }
 
         if (!fixedf.exists()) {
-            fixedf.getParentFile().mkdirs();
+            mkdirs = fixedf.getParentFile().mkdirs();
             saveResource("FixedRank.yml", false);
+        }
+
+        if (!mkdirs) {
+            getLogger().severe("Some config files were unable to be created!");
         }
 
         ladder = new YamlConfiguration();
@@ -291,7 +302,6 @@ public class Main extends JavaPlugin {
 
                 } catch (SQLException exception) {
                     exception.printStackTrace();
-                    return;
                 }
             }
         };
