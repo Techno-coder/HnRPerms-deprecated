@@ -29,11 +29,11 @@ public class Listener implements org.bukkit.event.Listener {
         BukkitRunnable r = new BukkitRunnable() {
             @Override
             public void run() {
-                Main.playerHashmap.put(e.getPlayer().getUniqueId(), e.getPlayer().addAttachment(plugin));
+                hnrperms.playerHashmap.put(e.getPlayer().getUniqueId(), e.getPlayer().addAttachment(plugin));
                 ResultSet result;
                 boolean exists;
                 try {
-                    result = Main.statement.executeQuery("SELECT COUNT(UUID)" + " FROM Perms" +
+                    result = hnrperms.statement.executeQuery("SELECT COUNT(UUID)" + " FROM Perms" +
                             " WHERE UUID ='"+ e.getPlayer().getUniqueId().toString() +"';");
                     result.next();
                     exists = result.getInt(1) > 0;
@@ -44,22 +44,22 @@ public class Listener implements org.bukkit.event.Listener {
 
                 try {
                     if(!exists) {
-                        Main.statement.executeUpdate("INSERT INTO Perms (UUID,Rank) VALUES ('" +
-                                e.getPlayer().getUniqueId().toString() + "','" + Main.rankOrder.get(0) + "');");
+                        hnrperms.statement.executeUpdate("INSERT INTO Perms (UUID,Rank) VALUES ('" +
+                                e.getPlayer().getUniqueId().toString() + "','" + hnrperms.rankOrder.get(0) + "');");
                     }
-                    result = Main.statement.executeQuery("SELECT Rank FROM Perms WHERE UUID = '" + e.getPlayer().getUniqueId().toString() + "';");
+                    result = hnrperms.statement.executeQuery("SELECT Rank FROM Perms WHERE UUID = '" + e.getPlayer().getUniqueId().toString() + "';");
                     result.next();
                     String[] playerRanksList = result.getString("Rank").split(" ");
-                    Main.playerRankmap.put(e.getPlayer().getUniqueId(), new ArrayList<>(Arrays.asList(playerRanksList)));
+                    hnrperms.playerRankmap.put(e.getPlayer().getUniqueId(), new ArrayList<>(Arrays.asList(playerRanksList)));
                     String ranksAsString = "";
                     for (String t : playerRanksList) {
-                        ArrayList<String> rankPermsList = Main.rankPerms.get(t);
+                        ArrayList<String> rankPermsList = hnrperms.rankPerms.get(t);
                         for (String s : rankPermsList) {
-                            Main.playerHashmap.get(e.getPlayer().getUniqueId()).setPermission(s, true);
+                            hnrperms.playerHashmap.get(e.getPlayer().getUniqueId()).setPermission(s, true);
                         }
                         ranksAsString += (t + " ");
                     }
-                    Main.getPlayersConfig().set(e.getPlayer().getUniqueId().toString(), ranksAsString);
+                    hnrperms.getPlayersConfig().set(e.getPlayer().getUniqueId().toString(), ranksAsString);
 
                 } catch (SQLException f) {
                     f.printStackTrace();
@@ -80,7 +80,7 @@ public class Listener implements org.bukkit.event.Listener {
     }
 
     private void cleanupPlayerQuit(Player p) {
-        Main.playerHashmap.remove(p.getUniqueId());
-        Main.playerRankmap.remove(p.getUniqueId());
+        hnrperms.playerHashmap.remove(p.getUniqueId());
+        hnrperms.playerRankmap.remove(p.getUniqueId());
     }
 }

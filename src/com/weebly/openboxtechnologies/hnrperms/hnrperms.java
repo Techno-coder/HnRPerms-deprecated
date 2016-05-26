@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class Main extends JavaPlugin {
+public class hnrperms extends JavaPlugin {
 
     private static final ChatMessages chatMessages = new ChatMessages();
 
@@ -133,7 +133,7 @@ public class Main extends JavaPlugin {
             playerRankmap.get(p.getUniqueId()).clear();
             playerRankmap.get(p.getUniqueId()).add(args[2]);
             updatePlayerRank(args[2], p);
-            Main.getPlayersConfig().set(p.getUniqueId().toString(), args[2]);
+            hnrperms.getPlayersConfig().set(p.getUniqueId().toString(), args[2]);
             e.sendMessage(chatMessages.set1 + args[1] + chatMessages.set2 + args[2] + chatMessages.suffix);
             p.sendMessage(chatMessages.playerSet + args[2] + chatMessages.suffix);
         } else if (args[0].equalsIgnoreCase("addrank")) {
@@ -144,7 +144,7 @@ public class Main extends JavaPlugin {
                 ranksAsString += (i + " ");
             }
             updatePlayerRank(ranksAsString, p);
-            Main.getPlayersConfig().set(p.getUniqueId().toString(), ranksAsString);
+            hnrperms.getPlayersConfig().set(p.getUniqueId().toString(), ranksAsString);
             e.sendMessage(chatMessages.rankAdd1 + args[1] + chatMessages.rankAdd2 + args[2] + chatMessages.suffix);
             p.sendMessage(chatMessages.playerAdd + args[2] + chatMessages.suffix);
 
@@ -159,7 +159,7 @@ public class Main extends JavaPlugin {
                 ranksAsString = rankOrder.get(0);
             }
             updatePlayerRank(ranksAsString, p);
-            Main.getPlayersConfig().set(p.getUniqueId().toString(), ranksAsString);
+            hnrperms.getPlayersConfig().set(p.getUniqueId().toString(), ranksAsString);
             e.sendMessage(chatMessages.rankRM1 + args[1] + chatMessages.rankRM2 + args[2] + chatMessages.suffix);
             p.sendMessage(chatMessages.playerRM + args[2] + chatMessages.suffix);
         } else {
@@ -273,7 +273,7 @@ public class Main extends JavaPlugin {
         for (String t : playerRankmap.get(p.getUniqueId())) {
             ArrayList<String> rankPermsList = rankPerms.get(t);
             for (String s : rankPermsList) {
-                Main.playerHashmap.get(p.getUniqueId()).setPermission(s, true);
+                hnrperms.playerHashmap.get(p.getUniqueId()).setPermission(s, true);
             }
             if (rankOrder.indexOf(t) > rank) {
                 rank = rankOrder.indexOf(t);
@@ -288,13 +288,13 @@ public class Main extends JavaPlugin {
                 ResultSet result;
                 boolean exists;
                 try {
-                    result = Main.statement.executeQuery("SELECT COUNT(UUID)" + " FROM Perms" +
+                    result = hnrperms.statement.executeQuery("SELECT COUNT(UUID)" + " FROM Perms" +
                             " WHERE UUID ='"+ id +"';");
                     result.next();
                     exists = result.getInt(1) > 0;
 
                     if(!exists) {
-                        Main.statement.executeUpdate("INSERT INTO Perms (UUID,Rank) VALUES ('" +
+                        hnrperms.statement.executeUpdate("INSERT INTO Perms (UUID,Rank) VALUES ('" +
                                 id.toString() + "','" + ranks + "');");
                     } else {
                         statement.executeUpdate("UPDATE Perms SET Rank = '" + ranks + "' WHERE UUID = '" + id.toString() + "';");
