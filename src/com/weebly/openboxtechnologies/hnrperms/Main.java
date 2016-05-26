@@ -13,10 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -273,8 +270,32 @@ public class Main extends JavaPlugin {
         }
         highestPlayerRank.put(p.getUniqueId(), rankOrder.get(rank));
     }
-    private void updateOfflinePlayer(UUID id, String ranks, int mode) {
+    private void updateOfflinePlayer(UUID id, String ranks) {
+        BukkitRunnable r = new BukkitRunnable() {
+            @Override
+            public void run() {
+                ResultSet result;
+                boolean exists;
+                try {
+                    result = Main.statement.executeQuery("SELECT COUNT(UUID)" + " FROM Perms" +
+                            " WHERE UUID ='"+ id +"';");
+                    result.next();
+                    exists = result.getInt(1) > 0;
 
+                    if(!exists) {
+                        Main.statement.executeUpdate("INSERT INTO Perms (UUID,Rank) VALUES ('" +
+                                id.toString() + "','" + ranks + "');");
+                    } else {
+                        statement.executeUpdate("UPDATE Perms SET Rank = '" + ranks + "' WHERE UUID = '" + id.toString() + "';");
+                    }
+
+                } catch (SQLException exception) {
+                    exception.printStackTrace();
+                    return;
+                }
+            }
+        };
+        r.runTaskAsynchronously(this);
     }
 
     private FileConfiguration getLadderConfig() {
