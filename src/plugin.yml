@@ -1,6 +1,6 @@
 main: com.weebly.openboxtechnologies.hnrperms.Main
 name: HnRPerms
-version: 0.1
+version: 0.2
 author: TechnoBrony
 description: HnRPerms Plugin
 commands:

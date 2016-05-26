@@ -1,5 +1,6 @@
 package com.weebly.openboxtechnologies.hnrperms;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -12,15 +13,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/**
- * Created by zhiyuanqi on 17/05/16.
- */
-
 public class Listener implements org.bukkit.event.Listener {
 
     private JavaPlugin plugin;
 
-    public Listener(JavaPlugin plugin) {
+    Listener(JavaPlugin plugin) {
 
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -74,13 +71,16 @@ public class Listener implements org.bukkit.event.Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        Main.playerHashmap.remove(e.getPlayer().getUniqueId());
-        Main.playerRankmap.remove(e.getPlayer().getUniqueId());
+        cleanupPlayerQuit(e.getPlayer());
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent e) {
-        Main.playerHashmap.remove(e.getPlayer().getUniqueId());
-        Main.playerRankmap.remove(e.getPlayer().getUniqueId());
+        cleanupPlayerQuit(e.getPlayer());
+    }
+
+    private void cleanupPlayerQuit(Player p) {
+        Main.playerHashmap.remove(p.getUniqueId());
+        Main.playerRankmap.remove(p.getUniqueId());
     }
 }

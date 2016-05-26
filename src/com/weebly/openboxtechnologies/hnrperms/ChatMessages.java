@@ -1,12 +1,8 @@
 package com.weebly.openboxtechnologies.hnrperms;
 
-/**
- * Created by zhiyuanqi on 17/05/16.
- */
-
 import org.bukkit.ChatColor;
 
-public class ChatMessages {
+class ChatMessages {
     final String permError = returnAlternateColorString("&e&lHnRPerms&7&l> &9To use this feature, you must be rank &8(&cADMIN&8)&9!");
 
     final String suffix = returnAlternateColorString("&9!");
@@ -45,7 +41,7 @@ public class ChatMessages {
     final String offlineSuccessful1 = returnAlternateColorString("&e&lCommand&7&l> &9UUID: ");
     final String offlineSuccessful2 = returnAlternateColorString(" &9has been updated with ranks: &c");
 
-    private final String returnAlternateColorString(String s) {
+    private String returnAlternateColorString(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
 }
