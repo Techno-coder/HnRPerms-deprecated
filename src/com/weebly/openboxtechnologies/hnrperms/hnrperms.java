@@ -285,6 +285,8 @@ public class hnrperms extends JavaPlugin {
             }
         }
         highestPlayerRank.put(p.getUniqueId(), rankOrder.get(rank));
+        RankChangedEvent e = new RankChangedEvent(p.getUniqueId());
+        getServer().getPluginManager().callEvent(e);
     }
     private void updateOfflinePlayer(UUID id, String ranks) {
         BukkitRunnable r = new BukkitRunnable() {
