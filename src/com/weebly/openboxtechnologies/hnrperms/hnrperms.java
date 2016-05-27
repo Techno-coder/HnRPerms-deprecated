@@ -54,7 +54,9 @@ public class hnrperms extends JavaPlugin {
             statement = connection.createStatement();           
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS Perms(UUID varchar(36), Rank varchar(255));");
         } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
+            getLogger().severe("Unable to perform SQL connection. Please check your config files.");
+            getLogger().severe("HnRPerms is disabling ...");
+            getServer().getPluginManager().disablePlugin(this);
         }
         helpChat = getConfig().getStringList("message");
         List<String> tempOrder = getLadderConfig().getStringList("grouporder");
