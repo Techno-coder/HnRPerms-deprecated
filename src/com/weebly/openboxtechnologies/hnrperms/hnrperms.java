@@ -37,7 +37,7 @@ public class hnrperms extends JavaPlugin {
     static HashMap<UUID,PermissionAttachment> playerHashmap = new HashMap<>();
     static HashMap<UUID,ArrayList<String>> playerRankmap = new HashMap<>();
     static HashMap<String, ArrayList<String>> rankPerms = new HashMap<>();
-    private static HashMap<UUID, String> highestPlayerRank = new HashMap<>();
+    static HashMap<UUID, String> highestPlayerRank = new HashMap<>();
     private static ArrayList<String> fixedRankPlayers = new ArrayList<>();
 
     @Override
@@ -171,6 +171,11 @@ public class hnrperms extends JavaPlugin {
 
     public String getHighestRank(Player p) {
         return highestPlayerRank.get(p.getUniqueId());
+    }
+    public ArrayList<String> getRanksList() {
+        ArrayList<String> modifiable = new ArrayList<>();
+        modifiable.addAll(rankOrder);
+        return modifiable;
     }
 
     private void openConnection() throws SQLException, ClassNotFoundException {

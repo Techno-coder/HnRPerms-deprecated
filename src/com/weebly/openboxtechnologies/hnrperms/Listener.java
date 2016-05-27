@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static com.weebly.openboxtechnologies.hnrperms.hnrperms.playerRankmap;
+
 public class Listener implements org.bukkit.event.Listener {
 
     private JavaPlugin plugin;
@@ -50,7 +52,7 @@ public class Listener implements org.bukkit.event.Listener {
                     result = hnrperms.statement.executeQuery("SELECT Rank FROM Perms WHERE UUID = '" + e.getPlayer().getUniqueId().toString() + "';");
                     result.next();
                     String[] playerRanksList = result.getString("Rank").split(" ");
-                    hnrperms.playerRankmap.put(e.getPlayer().getUniqueId(), new ArrayList<>(Arrays.asList(playerRanksList)));
+                    playerRankmap.put(e.getPlayer().getUniqueId(), new ArrayList<>(Arrays.asList(playerRanksList)));
                     String ranksAsString = "";
                     for (String t : playerRanksList) {
                         ArrayList<String> rankPermsList = hnrperms.rankPerms.get(t);
@@ -64,6 +66,14 @@ public class Listener implements org.bukkit.event.Listener {
                 } catch (SQLException f) {
                     f.printStackTrace();
                 }
+
+                int rank = 0;
+                for (String t : playerRankmap.get(e.getPlayer().getUniqueId())) {
+                    if (hnrperms.rankOrder.indexOf(t) > rank) {
+                        rank = hnrperms.rankOrder.indexOf(t);
+                    }
+                }
+                hnrperms.highestPlayerRank.put(e.getPlayer().getUniqueId(), hnrperms.rankOrder.get(rank));
             }
         };
         r.runTaskAsynchronously(plugin);
@@ -81,6 +91,6 @@ public class Listener implements org.bukkit.event.Listener {
 
     private void cleanupPlayerQuit(Player p) {
         hnrperms.playerHashmap.remove(p.getUniqueId());
-        hnrperms.playerRankmap.remove(p.getUniqueId());
+        playerRankmap.remove(p.getUniqueId());
     }
 }
